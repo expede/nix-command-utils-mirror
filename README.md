@@ -7,7 +7,7 @@ Helpers for defining commands for Nix shells under Flakes.
 ``` nix
 {
   inputs = {
-    command-utils.url = "github:expede/nix-command-utils";
+    command-utils.url = "git+https://codeberg.org/expede/nix-command-utils";
     flake-utils.url = "github:numtide/flake-utils";
     # ...
   };
