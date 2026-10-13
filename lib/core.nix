@@ -1,6 +1,8 @@
 { pkgs }:
 
 let
+  inherit (pkgs.lib) escapeShellArg;
+
   cmd = description: script: { inherit description script; help = null; };
 
   withHelp = help: def: def // { inherit help; };
@@ -13,9 +15,9 @@ let
       helpHandler =
         if help != null then ''
           if [ "$1" = "--help" ] || [ "$1" = "-h" ]; then
-            echo "${name} - ${description}"
+            echo ${escapeShellArg "${name} - ${description}"}
             echo ""
-            echo "${help}"
+            echo ${escapeShellArg help}
             exit 0
           fi
         '' else "";
@@ -27,7 +29,7 @@ let
           pkgs.writeScriptBin name ''
           #!${pkgs.bash}/bin/bash
           ${helpHandler}
-          echo "⚙️  Running ${name}..."
+          echo ${escapeShellArg "⚙️  Running ${name}..."}
           ${script}
         '';
       };
@@ -108,7 +110,7 @@ let
 
           # Combine all lines
           allLines = [ topBorder headerRow headerSep ] ++ interleave dataRows ++ [ bottomBorder ];
-          echoLines = builtins.concatStringsSep " && " (map (l: "echo '${l}'") allLines);
+          echoLines = builtins.concatStringsSep " && " (map (l: "echo ${escapeShellArg l}") allLines);
 
         in
           pkgs.writeScriptBin "menu" ''
